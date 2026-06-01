@@ -59,3 +59,9 @@ custom_opp/
 # Local check outputs
 server_cann_check.log
 sync.log
+
+# Local reference materials, not needed on the Ascend server
+*.pdf
+*.xls
+*.xlsx
+mstt/
