@@ -9,7 +9,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$repoRoot = git rev-parse --show-toplevel
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 Push-Location $repoRoot
 
 try {
