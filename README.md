@@ -25,6 +25,7 @@ operator work.
 - `docs/session_handoff.md`: concise context for resuming in a new Codex session.
 - `scripts/sync_to_server.ps1`: Windows-to-server sync helper.
 - `scripts/enter_timers1_lxz_env.sh`: container environment bootstrap.
+- `scripts/export_add_rms_norm_to_ops_nn.sh`: copy local operator source into `ops-nn`.
 - `scripts/build_add_rms_norm.sh`: build and install `add_rms_norm`.
 - `operators/norm/add_rms_norm/`: local development home for the target operator.
 - `docs/timer_s1_operator_notes.md`: existing operator development notes.

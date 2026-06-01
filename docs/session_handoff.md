@@ -167,16 +167,27 @@ Inside the container:
 bash /ddhome/timers1_lxz/ascend-cann/scripts/build_add_rms_norm.sh
 ```
 
-This rebuilds and reinstalls `add_rms_norm` from `/ddhome/timers1_lxz/ops-nn`.
+This first copies local source from:
+
+```text
+/ddhome/timers1_lxz/ascend-cann/operators/norm/add_rms_norm
+```
+
+into:
+
+```text
+/ddhome/timers1_lxz/ops-nn/norm/add_rms_norm
+```
+
+Then it rebuilds and reinstalls `add_rms_norm`.
 
 ## Next Work
 
 Recommended next task:
 
-1. Decide whether development changes should be applied directly to the `ops-nn` build workspace or copied from `operators/norm/add_rms_norm` into `ops-nn/norm/add_rms_norm` before each build.
-2. Create a small Timer-S1-focused test for `aclnnAddRmsNorm`.
-3. Compare the ACLNN output against a PyTorch/Numpy reference for representative Timer-S1 tensor shapes.
-4. Add a script that copies local `operators/norm/add_rms_norm` into the server `ops-nn/norm/add_rms_norm` before build.
+1. Create a small Timer-S1-focused test for `aclnnAddRmsNorm`.
+2. Compare the ACLNN output against a PyTorch/Numpy reference for representative Timer-S1 tensor shapes.
+3. Start tuning or adapting `operators/norm/add_rms_norm` for Timer-S1 once the test is stable.
 
 When starting a new Codex session, say:
 

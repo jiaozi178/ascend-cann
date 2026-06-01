@@ -11,6 +11,11 @@ OPS_NN_DIR="${OPS_NN_DIR:-/ddhome/timers1_lxz/ops-nn}"
 CANN_HOME="${CANN_HOME:-/ddhome/timers1_lxz/Ascend/cann-8.5.0}"
 OP_NAME="${OP_NAME:-add_rms_norm}"
 SOC="${SOC:-ascend910b}"
+SYNC_LOCAL_SOURCE="${SYNC_LOCAL_SOURCE:-1}"
+
+if [ "$SYNC_LOCAL_SOURCE" = "1" ] && [ -x /ddhome/timers1_lxz/ascend-cann/scripts/export_add_rms_norm_to_ops_nn.sh ]; then
+  /ddhome/timers1_lxz/ascend-cann/scripts/export_add_rms_norm_to_ops_nn.sh
+fi
 
 cd "$OPS_NN_DIR"
 

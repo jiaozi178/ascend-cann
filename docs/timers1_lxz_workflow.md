@@ -37,6 +37,9 @@ Inside the container:
 bash /ddhome/timers1_lxz/ascend-cann/scripts/build_add_rms_norm.sh
 ```
 
+The build script copies the synced local operator source into the `ops-nn` build workspace
+before compiling.
+
 ## Directory Roles
 
 ```text
