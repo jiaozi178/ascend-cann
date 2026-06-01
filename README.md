@@ -22,6 +22,7 @@ operator work.
 ## Useful Files
 
 - `docs/timers1_lxz_workflow.md`: current local-to-server workflow.
+- `docs/session_handoff.md`: concise context for resuming in a new Codex session.
 - `scripts/sync_to_server.ps1`: Windows-to-server sync helper.
 - `scripts/enter_timers1_lxz_env.sh`: container environment bootstrap.
 - `scripts/build_add_rms_norm.sh`: build and install `add_rms_norm`.
