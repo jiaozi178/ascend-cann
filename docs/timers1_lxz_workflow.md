@@ -8,7 +8,7 @@ the server cannot currently reach GitHub.
 From Windows PowerShell:
 
 ```powershell
-cd "C:\Users\DELL\Desktop\华为昇腾服务器CANN开发"
+cd "C:\Users\DELL\Desktop\ascend-cann-dev"
 .\scripts\sync_to_server.ps1
 ```
 

@@ -1,45 +1,103 @@
-# add_rms_norm / aclnnAddRmsNorm
+# AddRmsNorm
 
-This directory is the local development home for the Timer-S1 `aclnn_add_rms_norm`
-operator work.
+## 产品支持情况
 
-The upstream reference implementation currently lives on the Ascend server at:
+|产品             |  是否支持  |
+|:-------------------------|:----------:|
+|  <term>Ascend 950PR/Ascend 950DT</term>   |     √    |
+|  <term>Atlas A3 训练系列产品/Atlas A3 推理系列产品</term>   |     √    |
+|  <term>Atlas A2 训练系列产品/Atlas A2 推理系列产品</term>     |     √    |
 
-```text
-/ddhome/timers1_lxz/ops-nn/norm/add_rms_norm
-```
+## 功能说明
 
-After syncing this repository to the server, run the import helper inside the
-`timers1_lxz` container if you want to copy the upstream source into this directory:
+- 算子功能：RmsNorm算子是大模型常用的归一化操作，相比LayerNorm算子，其去掉了减去均值的部分。AddRmsNorm算子将RmsNorm前的Add算子融合起来，减少搬入搬出操作。
+- 计算公式：
 
-```bash
-cd /ddhome/timers1_lxz/ascend-cann
-bash scripts/import_add_rms_norm_from_ops_nn.sh
-```
+  $$
+  x_i=x1_{i}+x2_{i}
+  $$
 
-Then bring those files back to the local machine before editing them locally.
+  $$
+  \operatorname{RmsNorm}(x_i)=\frac{x_i}{\operatorname{Rms}(\mathbf{x})} g_i, \quad \text { where } \operatorname{Rms}(\mathbf{x})=\sqrt{\frac{1}{n} \sum_{i=1}^n x_i^2+eps}
+  $$
 
-## Target
 
-- Operator directory in `ops-nn`: `norm/add_rms_norm`
-- Build option: `--ops=add_rms_norm`
-- ACLNN API: `aclnnAddRmsNorm`
-- Header after package install:
+## 参数说明
 
-```text
-/ddhome/timers1_lxz/Ascend/cann-8.5.0/opp/vendors/custom_nn/op_api/include/aclnnop/aclnn_add_rms_norm.h
-```
+<table style="undefined;table-layout: fixed; width: 1005px"><colgroup>
+  <col style="width: 170px">
+  <col style="width: 170px">
+  <col style="width: 352px">
+  <col style="width: 213px">
+  <col style="width: 100px">
+  </colgroup>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>输入/输出/属性</th>
+      <th>描述</th>
+      <th>数据类型</th>
+      <th>数据格式</th>
+    </tr></thead>
+  <tbody>
+    <tr>
+      <td>x1</td>
+      <td>输入</td>
+      <td>用于Add计算的第一个输入，对应公式中的`x1`。</td>
+      <td>FLOAT32、FLOAT16、BFLOAT16</td>
+      <td>ND</td>
+    </tr>
+    <tr>
+      <td>x2</td>
+      <td>输入</td>
+      <td>用于Add计算的第二个输入，对应公式中的`x2`。</td>
+      <td>FLOAT32、FLOAT16、BFLOAT16</td>
+      <td>ND</td>
+    </tr>
+    <tr>
+      <td>gamma</td>
+      <td>输入</td>
+      <td>表示RmsNorm的缩放因子（权重），对应公式中的`g`。shape需要与`x1`后几维保持一致，后几维为x1需要norm的维度。</td>
+      <td>FLOAT32、FLOAT16、BFLOAT16</td>
+      <td>ND</td>
+    </tr>
+    <tr>
+      <td>epsilon</td>
+      <td>可选属性</td>
+      <td><ul><li>添加到分母中的值，以确保数值稳定，用于防止除0错误，对应公式中的eps。</li><li>默认值为1e-6f。</li></ul></td>
+      <td>FLOAT</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>y</td>
+      <td>输出</td>
+      <td>表示最后的输出，Device侧的aclTensor，对应公式中的`RmsNorm(x)`。</td>
+      <td>FLOAT32、FLOAT16、BFLOAT16</td>
+      <td>ND</td>
+    </tr>
+    <tr>
+      <td>rstd</td>
+      <td>输出</td>
+      <td>表示归一化后的标准差，对应公式中的`Rms(x)`。</td>
+      <td>FLOAT32</td>
+      <td>ND</td>
+    </tr>
+    <tr>
+      <td>x</td>
+      <td>输出</td>
+      <td>表示Add计算的结果，对应公式中的`x`。</td>
+      <td>FLOAT32、FLOAT16、BFLOAT16</td>
+      <td>ND</td>
+    </tr>
+  </tbody></table>
 
-## Server Environment
+## 约束说明
 
-Inside the container:
+无
 
-```bash
-source /ddhome/timers1_lxz/ascend-cann/scripts/enter_timers1_lxz_env.sh
-```
+## 调用说明
 
-Build and install the operator package:
-
-```bash
-bash /ddhome/timers1_lxz/ascend-cann/scripts/build_add_rms_norm.sh
-```
+| 调用方式   | 样例代码           | 说明                                         |
+| ---------------- | --------------------------- | --------------------------------------------------- |
+| aclnn接口  | [test_aclnn_add_rms_norm](examples/test_aclnn_add_rms_norm.cpp) | 通过[aclnnAddRmsNorm](docs/aclnnAddRmsNorm.md)接口方式调用AddRmsNorm算子。 |
+| 图模式 | -  | 通过[算子IR](op_graph/add_rms_norm_proto.h)构图方式调用AddRmsNorm算子。         |

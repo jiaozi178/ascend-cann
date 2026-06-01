@@ -26,7 +26,7 @@ operator work.
 - `scripts/enter_timers1_lxz_env.sh`: container environment bootstrap.
 - `scripts/build_add_rms_norm.sh`: build and install `add_rms_norm`.
 - `operators/norm/add_rms_norm/`: local development home for the target operator.
-- `Timer-S1 算子开发 分享.md`: existing operator development notes.
+- `docs/timer_s1_operator_notes.md`: existing operator development notes.
 
 ## Sync to Server
 
