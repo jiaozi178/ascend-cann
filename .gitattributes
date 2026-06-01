@@ -2,6 +2,9 @@
 
 *.sh text eol=lf
 *.bash text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.ini text eol=lf
 *.py text eol=lf
 *.c text eol=lf
 *.cc text eol=lf
