@@ -1,5 +1,5 @@
 param(
-    [string]$HostName = "119.36.238.227",
+    [string]$HostName = "ascend-cann",
     [int]$Port = 17219,
     [string]$User = "lixinze",
     [string]$RemoteDir = "/ddhome/timers1_lxz/ascend-cann",
