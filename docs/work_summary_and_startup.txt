@@ -1,0 +1,323 @@
+Timer-S1 CANN 算子开发工作小结与每日启动命令
+================================================
+
+更新时间：2026-06-01
+
+
+一、当前目标
+------------
+
+目标项目：
+  Timer-S1 相关 CANN 算子开发
+
+当前目标算子：
+  aclnnAddRmsNorm / add_rms_norm
+
+本地开发目录：
+  C:\Users\DELL\Desktop\ascend-cann-dev
+
+服务器工作目录：
+  /ddhome/timers1_lxz
+
+服务器同步仓库目录：
+  /ddhome/timers1_lxz/ascend-cann
+
+服务器 ops-nn 目录：
+  /ddhome/timers1_lxz/ops-nn
+
+CANN 安装目录：
+  /ddhome/timers1_lxz/Ascend/cann-8.5.0
+
+Docker 容器：
+  timers1_lxz
+
+Conda 环境：
+  timers1_lxz
+
+GitHub 备份仓库：
+  https://github.com/jiaozi178/ascend-cann.git
+
+
+二、已经完成的工作
+------------------
+
+1. VS Code Remote-SSH 已经可以连接服务器 ascend-cann。
+
+2. 服务器环境已经检查完成：
+   - 宿主机系统：EulerOS 2.0 SP12，aarch64
+   - CPU：Kunpeng-920，192 核
+   - 内存：约 503 GiB
+   - NPU：8 张 910B4，npu-smi 状态 OK
+   - /home 分区空间较紧张，不作为主要开发目录
+   - /ddhome 空间充足，作为 Timer-S1 工作区
+
+3. 已创建个人 Docker 容器：
+   timers1_lxz
+
+4. 已创建个人 Conda 环境：
+   timers1_lxz
+
+5. 已安装个人独立 CANN 8.5.0：
+   /ddhome/timers1_lxz/Ascend/cann-8.5.0
+
+6. 已克隆并配置 ops-nn 8.5.0：
+   /ddhome/timers1_lxz/ops-nn
+
+7. 已确认目标算子在 ops-nn 中的位置：
+   /ddhome/timers1_lxz/ops-nn/norm/add_rms_norm
+
+8. 已成功编译 add_rms_norm：
+   bash build.sh --pkg --soc=ascend910b --ops=add_rms_norm
+
+9. 已成功生成并安装自定义算子包：
+   /ddhome/timers1_lxz/ops-nn/build_out/cann-ops-nn-custom-linux.aarch64.run
+
+10. 已确认安装产物存在：
+   /ddhome/timers1_lxz/Ascend/cann-8.5.0/opp/vendors/custom_nn/op_api/include/aclnnop/aclnn_add_rms_norm.h
+   /ddhome/timers1_lxz/Ascend/cann-8.5.0/opp/vendors/custom_nn/op_api/lib/libcust_opapi.so
+
+11. 已建立本地英文仓库，避免中文路径编码问题：
+   C:\Users\DELL\Desktop\ascend-cann-dev
+
+12. 已把 add_rms_norm 源码同步回本地仓库：
+   operators/norm/add_rms_norm
+
+13. 已建立本地到服务器的同步脚本：
+   scripts/sync_to_server.ps1
+
+14. 已建立服务器侧环境和构建脚本：
+   scripts/enter_timers1_lxz_env.sh
+   scripts/export_add_rms_norm_to_ops_nn.sh
+   scripts/build_add_rms_norm.sh
+
+15. 已建立会话恢复文档：
+   docs/session_handoff.md
+
+16. 已配置 SSH Host：
+   ascend-cann
+
+17. 已将同步脚本默认改为使用 SSH Host：
+   ascend-cann
+
+
+三、每次重新打开电脑后的推荐流程
+--------------------------------
+
+步骤 1：打开本地项目
+
+在 VS Code 中打开：
+
+  C:\Users\DELL\Desktop\ascend-cann-dev
+
+不要继续使用旧的中文目录：
+
+  C:\Users\DELL\Desktop\华为昇腾服务器CANN开发
+
+
+步骤 2：打开本地 PowerShell，进入本地仓库
+
+  cd "C:\Users\DELL\Desktop\ascend-cann-dev"
+
+检查 Git 状态：
+
+  git status
+
+
+步骤 3：测试服务器 SSH 连接
+
+如果已经配置好 SSH 密钥免密登录：
+
+  ssh ascend-cann "echo SSH_OK"
+
+如果输出 SSH_OK，说明连接正常。
+
+如果仍然提示输入密码，也可以先正常输入密码继续工作。
+
+
+步骤 4：连接服务器
+
+  ssh ascend-cann
+
+如果不用 Host 别名，也可以用：
+
+  ssh -p 17219 lixinze@119.36.238.227
+
+
+步骤 5：进入 Docker 容器
+
+在服务器宿主机里执行：
+
+  docker start timers1_lxz 2>/dev/null || true
+  docker exec -it timers1_lxz bash
+
+
+步骤 6：在容器里加载 CANN 开发环境
+
+进入容器后执行：
+
+  source /ddhome/timers1_lxz/ascend-cann/scripts/enter_timers1_lxz_env.sh
+
+成功后，应该位于：
+
+  /ddhome/timers1_lxz
+
+可以检查：
+
+  echo $CONDA_DEFAULT_ENV
+  echo $ASCEND_HOME_PATH
+  npu-smi info
+
+
+四、日常开发流程
+----------------
+
+本地修改源码：
+
+  C:\Users\DELL\Desktop\ascend-cann-dev\operators\norm\add_rms_norm
+
+修改后，在本地 PowerShell 同步到服务器：
+
+  cd "C:\Users\DELL\Desktop\ascend-cann-dev"
+  .\scripts\sync_to_server.ps1
+
+同步脚本会把本地仓库中未被 .gitignore 忽略的文件同步到：
+
+  /ddhome/timers1_lxz/ascend-cann
+
+注意：
+  PDF、Excel、mstt、日志、build 产物、bundle 等不会同步。
+
+
+五、服务器编译与安装
+--------------------
+
+在服务器容器里执行：
+
+  source /ddhome/timers1_lxz/ascend-cann/scripts/enter_timers1_lxz_env.sh
+  bash /ddhome/timers1_lxz/ascend-cann/scripts/build_add_rms_norm.sh
+
+这个脚本会自动做三件事：
+
+1. 把本地同步过来的源码：
+
+   /ddhome/timers1_lxz/ascend-cann/operators/norm/add_rms_norm
+
+   覆盖到 ops-nn 构建目录：
+
+   /ddhome/timers1_lxz/ops-nn/norm/add_rms_norm
+
+2. 执行编译：
+
+   bash build.sh --pkg --soc=ascend910b --ops=add_rms_norm
+
+3. 安装生成的自定义算子包到：
+
+   /ddhome/timers1_lxz/Ascend/cann-8.5.0/opp/vendors/custom_nn
+
+
+六、常用检查命令
+----------------
+
+检查环境：
+
+  source /ddhome/timers1_lxz/ascend-cann/scripts/enter_timers1_lxz_env.sh
+  pwd
+  whoami
+  echo $CONDA_DEFAULT_ENV
+  echo $ASCEND_HOME_PATH
+  echo $ASCEND_OPP_PATH
+  which atc
+  which opc
+  which msopgen
+  npu-smi info
+
+检查同步文件：
+
+  ls -lah /ddhome/timers1_lxz/ascend-cann/scripts
+  ls -lah /ddhome/timers1_lxz/ascend-cann/operators/norm/add_rms_norm
+
+检查源码是否同步到 ops-nn：
+
+  diff -q \
+    /ddhome/timers1_lxz/ascend-cann/operators/norm/add_rms_norm/op_kernel/add_rms_norm.cpp \
+    /ddhome/timers1_lxz/ops-nn/norm/add_rms_norm/op_kernel/add_rms_norm.cpp
+
+检查安装产物：
+
+  find /ddhome/timers1_lxz/Ascend/cann-8.5.0/opp/vendors/custom_nn -name 'aclnn_add_rms_norm.h'
+  find /ddhome/timers1_lxz/Ascend/cann-8.5.0/opp/vendors/custom_nn -name 'libcust_opapi.so'
+  find /ddhome/timers1_lxz/Ascend/cann-8.5.0/opp/vendors/custom_nn -path '*ascend910b*add_rms_norm*' | head -20
+
+检查构建包：
+
+  ls -lah /ddhome/timers1_lxz/ops-nn/build_out
+
+
+七、Git 保存本地版本
+--------------------
+
+本地修改完成后，建议提交并推送到 GitHub 做备份：
+
+  cd "C:\Users\DELL\Desktop\ascend-cann-dev"
+  git status
+  git add .
+  git commit -m "Update add_rms_norm development"
+  git push
+
+说明：
+  服务器无法稳定访问 GitHub，所以服务器同步不用 git pull。
+  GitHub 主要作为本地代码历史和备份。
+
+
+八、如果新开 Codex 会话
+-----------------------
+
+在新会话中先打开本地英文目录：
+
+  C:\Users\DELL\Desktop\ascend-cann-dev
+
+然后告诉 Codex：
+
+  请先阅读 docs/session_handoff.md 和 docs/work_summary_and_startup.txt，然后继续当前 CANN 算子开发。
+
+
+九、下一步要做什么
+------------------
+
+下一步推荐任务：
+
+1. 写一个最小 aclnnAddRmsNorm 运行测试。
+
+2. 用 Numpy/PyTorch 写参考实现：
+
+   x = x1 + x2
+   rstd = 1 / sqrt(mean(x * x, axis=-1, keepdims=True) + epsilon)
+   y = x * rstd * gamma
+
+3. 对比 ACLNN 输出和参考输出。
+
+4. 针对 Timer-S1 的真实张量 shape 做测试。
+
+5. 再根据测试结果决定是否需要修改 kernel、tiling 或 host 侧逻辑。
+
+
+十、最短每日命令版
+------------------
+
+本地 PowerShell：
+
+  cd "C:\Users\DELL\Desktop\ascend-cann-dev"
+  git status
+  .\scripts\sync_to_server.ps1
+
+服务器宿主机：
+
+  ssh ascend-cann
+  docker start timers1_lxz 2>/dev/null || true
+  docker exec -it timers1_lxz bash
+
+容器内：
+
+  source /ddhome/timers1_lxz/ascend-cann/scripts/enter_timers1_lxz_env.sh
+  bash /ddhome/timers1_lxz/ascend-cann/scripts/build_add_rms_norm.sh
+

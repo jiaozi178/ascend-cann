@@ -23,6 +23,7 @@ operator work.
 
 - `docs/timers1_lxz_workflow.md`: current local-to-server workflow.
 - `docs/session_handoff.md`: concise context for resuming in a new Codex session.
+- `docs/work_summary_and_startup.txt`: completed work summary and daily startup commands.
 - `scripts/sync_to_server.ps1`: Windows-to-server sync helper.
 - `scripts/enter_timers1_lxz_env.sh`: container environment bootstrap.
 - `scripts/export_add_rms_norm_to_ops_nn.sh`: copy local operator source into `ops-nn`.
