@@ -3,7 +3,8 @@ param(
     [int]$Port = 17219,
     [string]$User = "lixinze",
     [string]$RemoteDir = "/ddhome/timers1_lxz/ascend-cann",
-    [string]$Branch = "HEAD"
+    [string]$Branch = "HEAD",
+    [switch]$CommittedOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -12,16 +13,6 @@ $repoRoot = git rev-parse --show-toplevel
 Push-Location $repoRoot
 
 try {
-    git diff --quiet
-    if ($LASTEXITCODE -ne 0) {
-        throw "Working tree has unstaged changes. Commit or stash before syncing."
-    }
-
-    git diff --cached --quiet
-    if ($LASTEXITCODE -ne 0) {
-        throw "Index has staged changes. Commit or unstage before syncing."
-    }
-
     $safeRemotePrefix = "/ddhome/timers1_lxz/ascend-cann"
     if (-not ($RemoteDir -eq $safeRemotePrefix -or $RemoteDir.StartsWith("$safeRemotePrefix/"))) {
         throw "RemoteDir must be under $safeRemotePrefix"
@@ -30,10 +21,38 @@ try {
     $stamp = Get-Date -Format "yyyyMMddHHmmss"
     $bundleName = "ascend-cann-sync-$stamp.tar"
     $localTar = Join-Path $env:TEMP $bundleName
+    $stageDir = Join-Path $env:TEMP "ascend-cann-sync-$stamp"
     $remoteTar = "/tmp/$bundleName"
     $target = "${User}@${HostName}"
 
-    git archive --format=tar --output=$localTar $Branch
+    if ($CommittedOnly) {
+        git archive --format=tar --output=$localTar $Branch
+    }
+    else {
+        New-Item -ItemType Directory -Path $stageDir -Force | Out-Null
+        $files = git ls-files --cached --others --exclude-standard
+
+        foreach ($file in $files) {
+            if ([string]::IsNullOrWhiteSpace($file)) {
+                continue
+            }
+
+            $source = Join-Path $repoRoot $file
+            if (-not (Test-Path -LiteralPath $source -PathType Leaf)) {
+                continue
+            }
+
+            $dest = Join-Path $stageDir $file
+            $destParent = Split-Path -Parent $dest
+            if ($destParent) {
+                New-Item -ItemType Directory -Path $destParent -Force | Out-Null
+            }
+
+            Copy-Item -LiteralPath $source -Destination $dest -Force
+        }
+
+        tar -cf $localTar -C $stageDir .
+    }
 
     scp -P $Port $localTar "${target}:$remoteTar"
 
@@ -57,6 +76,9 @@ echo "Synced to `$REMOTE_DIR"
 finally {
     if (Test-Path $localTar) {
         Remove-Item -LiteralPath $localTar -Force
+    }
+    if ($stageDir -and (Test-Path $stageDir)) {
+        Remove-Item -LiteralPath $stageDir -Recurse -Force
     }
     Pop-Location
 }
