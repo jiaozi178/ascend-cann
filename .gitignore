@@ -1,0 +1,61 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# VS Code: keep shared project hints, ignore local workspace state
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# Secrets and local credentials
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_rsa.*
+known_hosts
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# C / C++ / CMake
+build/
+build-*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+compile_commands.json
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.exe
+
+# Ascend / CANN generated files
+build_out/
+output/
+outputs/
+custom_opp/
+*.run
+*.om
+*.air
+*.mindir
+*.log
+
+# Local check outputs
+server_cann_check.log
+sync.log
