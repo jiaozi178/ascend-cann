@@ -67,6 +67,9 @@ esac
 mkdir -p "`$REMOTE_DIR"
 find "`$REMOTE_DIR" -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
 tar -xf "`$REMOTE_TAR" -C "`$REMOTE_DIR"
+if [ -d "`$REMOTE_DIR/scripts" ]; then
+  find "`$REMOTE_DIR/scripts" -type f -name '*.sh' -exec chmod +x {} +
+fi
 rm -f "`$REMOTE_TAR"
 echo "Synced to `$REMOTE_DIR"
 "@

@@ -1,27 +1,38 @@
 # Huawei Ascend CANN Development
 
-This repository is the local development workspace for Ascend CANN operator work.
+This repository is the local development workspace for Timer-S1 Ascend CANN
+operator work.
 
 ## Workflow
 
 1. Develop and edit files locally with Codex.
-2. Commit changes to this Git repository.
-3. Push the `main` branch to GitHub.
-4. Let the Ascend server pull the latest code from GitHub into `/ddhome/lixinze/cann_projects`.
-5. Build and run on the Ascend server.
+2. Sync the local working tree to the Ascend server with `scripts/sync_to_server.ps1`.
+3. Build and run inside the `timers1_lxz` Docker container.
+4. Commit and push to GitHub for backup and history.
 
 ## Current Notes
 
 - Remote SSH host alias: `ascend-cann`
 - Remote user: `lixinze`
-- Recommended remote workspace root: `/ddhome/lixinze/cann_projects`
-- Avoid using `/home/lixinze` for project builds because the checked server has very little free space there.
+- Container: `timers1_lxz`
+- Remote workspace root: `/ddhome/timers1_lxz`
+- CANN installation: `/ddhome/timers1_lxz/Ascend/cann-8.5.0`
+- Target operator: `aclnnAddRmsNorm` from `ops-nn/norm/add_rms_norm`
 
 ## Useful Files
 
-- `docs/github-server-sync.md`: GitHub repository and server sync setup guide.
-- `scripts/server_pull_and_run.sh`: server-side pull-and-run helper for cron or manual sync.
+- `docs/timers1_lxz_workflow.md`: current local-to-server workflow.
+- `scripts/sync_to_server.ps1`: Windows-to-server sync helper.
+- `scripts/enter_timers1_lxz_env.sh`: container environment bootstrap.
+- `scripts/build_add_rms_norm.sh`: build and install `add_rms_norm`.
+- `operators/norm/add_rms_norm/`: local development home for the target operator.
 - `Timer-S1 算子开发 分享.md`: existing operator development notes.
+
+## Sync to Server
+
+```powershell
+.\scripts\sync_to_server.ps1
+```
 
 ## Basic Local Git Commands
 
